@@ -28,7 +28,7 @@ public class BackGround : MonoBehaviour
     {
         for (int i = 0; i < grounds.Length; i++)
         {
-            grounds[i].position += new Vector3(-speed, -1.5f, 0) * Time.deltaTime;
+            grounds[i].position += new Vector3(-speed, 0, 0) * Time.deltaTime;
 
             if (grounds[i].position.x < leftPosX)
             {

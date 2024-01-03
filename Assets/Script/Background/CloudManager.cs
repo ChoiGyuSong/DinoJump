@@ -16,7 +16,7 @@ public class CloudManager : MonoBehaviour
     }
     public void CreatCloud()
     {
-        randY = Random.Range(1.0f, 4.0f);
+        randY = Random.Range(0.8f, 5.0f);
         genPosition = new Vector3(background.rightPosX * 0.5f, randY, 0);
         creatCloud = Random.value;
         if (creatCloud < 0.25f)

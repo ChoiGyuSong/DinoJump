@@ -9,6 +9,8 @@ public class CactusManager : MonoBehaviour
     Vector3 genPosition;
     BackGround background;
     float randCactus;
+    float randCactusGen;
+    float genX;
 
     private void Awake()
     {
@@ -16,8 +18,10 @@ public class CactusManager : MonoBehaviour
     }
     public void CreatCactus()
     {
+        genX = background.rightPosX * 0.5f;
         randCactus = Random.Range(1, 4);
-        genPosition = new Vector3(background.rightPosX * 0.5f, 0, 0);
+        randCactusGen = Random.Range(genX -2, genX +4);
+        genPosition = new Vector3(randCactusGen, -1.3f, 0);
         if (randCactus == 1)
         {
             Instantiate(cactusPref[0], genPosition, Quaternion.identity);
