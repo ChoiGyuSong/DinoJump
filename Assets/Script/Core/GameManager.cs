@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
     public void Restart()
     {
         rankManager = FindObjectOfType<RankingManager>();
-        rankManager.TextOn();
+        rankManager.sceneLoad++;
         Time.timeScale = 1.0f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -68,9 +68,6 @@ public class GameManager : MonoBehaviour
     {
         pausePanel.SetActive(true);
         Time.timeScale = 0f;
-
-        //Time.timeScale = 0.0f;
-        //pausePanel.SetActive(true);
     }
 
     public void Resume()

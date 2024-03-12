@@ -18,7 +18,6 @@ public class Player : MonoBehaviour
     TextMeshProUGUI nowScore;
     Canvas canvas;
     Transform panel;
-    TMP_InputField nameInputField; // 인스펙터에서 할당
 
     void Awake()
     {
@@ -31,7 +30,6 @@ public class Player : MonoBehaviour
         GameObject game = GameObject.FindWithTag("Score");
         nowScore = game.GetComponent<TextMeshProUGUI>();
 
-        nameInputField = FindObjectOfType<TMP_InputField>();
         canvas = FindObjectOfType<Canvas>();
         panel = canvas.transform.GetChild(1);
         panel.gameObject.SetActive(false);
@@ -85,10 +83,8 @@ public class Player : MonoBehaviour
     void Die()
     {
         panel.gameObject.SetActive(true);
-        nameInputField.gameObject.SetActive(false);
         nowScore.text = string.Format("{0:N2}", timer.time);
-        rankManager.TextOff();
-        rankManager.CheckForHighScore(timer.time);
+        rankManager.CheckRanking(timer.time);
         Time.timeScale = 0.0f;
     }
 }

@@ -1,123 +1,149 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 [System.Serializable]
-public class PlayerScore
+public class RankingData
 {
-    public string playerName;
-    public float survivalTime;
+    public string name;
+    public float score;
 }
 
 public class RankingManager : MonoBehaviour
 {
-    public List<PlayerScore> highScores = new List<PlayerScore>();
-    private const int MaxRankings = 5;
-    TMP_InputField inputField; // 인스펙터에서 할당
-    RankDisplay rankDisplay;
-    public static TMP_InputField insName;
-    public static List<PlayerScore> playerScores;
-    string json;
-    int nowRank;
+    public TMP_InputField inputField;
+    GameObject rankingPanel;
+    Text[] rankingTexts;
+    public List<RankingData> rankingList = new List<RankingData>();
+    RankDisplay rankingDisplay;
+    public int isRank;
+    public int sceneLoad = 0;
 
     private void Awake()
     {
+        rankingDisplay = FindObjectOfType<RankDisplay>();
         inputField = FindObjectOfType<TMP_InputField>();
-        insName = inputField;
-        Canvas canvas = FindObjectOfType<Canvas>();
-        Transform transform = canvas.transform;
-        Transform rank = transform.GetChild(1);
-        rankDisplay = FindAnyObjectByType<RankDisplay>();
-
-        LoadRanking();
+        //inputField.gameObject.SetActive(false);
     }
 
-
-    public void TextOff()
+    void Start()
     {
-        insName.gameObject.SetActive(false);
+        LoadRanking();
     }
 
     public void TextOn()
     {
-        insName.gameObject.SetActive(true);
+        inputField.gameObject.SetActive(true);
     }
-
-    public void CheckForHighScore(float time)
+    /// <summary>
+    /// 랭킹에 들어가는지 확인
+    /// </summary>
+    /// <param name="score"></param>
+    public void CheckRanking(float score)
     {
-        // 랭킹에 들었는지 확인
-        if (highScores.Count < MaxRankings || time > highScores[highScores.Count - 1].survivalTime)
+        isRank = 10;
+        SceneLoadCheck();
+
+        for (int i = Mathf.Min(rankingList.Count, 5) - 1; i >= 0; i--)
         {
-            switch(highScores.Count)
+            if (rankingList[i].score < score)
             {
-                case 1:
-                    nowRank = 1;
-                    break;
-                case 2:
-                    nowRank = 2;
-                    break;
-                case 3:
-                    nowRank = 3;
-                    break;
-                case 4:
-                    nowRank = 4;
-                    break;
-                case 5:
-                    nowRank = 5;
-                    break;
+                isRank = i;
             }
-            // InputField 활성화
-            insName.gameObject.SetActive(true);
-            insName.onEndEdit.AddListener(delegate { EnterName(time); });
-            insName.Select(); // 사용자 입력을 받기 위해 선택
-            rankDisplay.DisplayRanking();
+            else
+            {
+                break; // 더 이상 비교할 필요 없음
+            }
         }
-    }
-
-    private void EnterName(float time)
-    {
-        // InputField로부터 이름을 받아와 리스트에 추가
-        highScores.Add(new PlayerScore { playerName = insName.text, survivalTime = time });
-        SortAndSaveRanking();
-        insName.gameObject.SetActive(false); // 이름 입력이 끝나면 InputField 비활성화
-        insName.text = "";
-        Debug.Log($"1번 {highScores.Count}");
-        rankDisplay.DisplayRanking();
-    }
-
-    private void SortAndSaveRanking()
-    {
-        // 점수를 내림차순으로 정렬
-        highScores = highScores.OrderByDescending(score => score.survivalTime).ToList();
-        // 랭킹이 MaxRankings를 초과하면 마지막을 제거
-        if (highScores.Count > MaxRankings)
+        Debug.Log(isRank);
+        if (rankingList.Count == 0)
         {
-            highScores.RemoveAt(highScores.Count - 1);
+            // 리스트가 비어있는 경우
+            RankingData newRankingData = new RankingData();
+            newRankingData.score = score;
+            rankingList.Add(newRankingData);
+
+            // 이름 입력
+            inputField.gameObject.SetActive(true);
+            inputField.onEndEdit.AddListener(delegate { EnterName(0); });
         }
+        else
+        {
+            // 리스트에 데이터가 있는 경우
+            for (int i = 0; i < rankingList.Count; i++)
+            {
+                if (score > rankingList[i].score)
+                {
+                    RankingData newRankingData = new RankingData();
+                    newRankingData.score = score;
+                    rankingList.Insert(i, newRankingData);
+
+                    // 이름 입력
+                    inputField.gameObject.SetActive(true);
+                    inputField.onEndEdit.AddListener(delegate { EnterName(i); });
+                    break;
+                }
+            }
+        }
+
+        if (rankingList.Count > 5)
+        {
+            rankingList.RemoveRange(5, rankingList.Count - 5);
+        }
+
+        // 디스플레이 출력
+        rankingDisplay.DisplayRanking();
+    }
+
+    /// <summary>
+    /// 입력받은 이름 랭킹 저장
+    /// </summary>
+    /// <param name="index"></param>
+    public void EnterName(int index)
+    {
+        // 입력된 이름 저장
+        rankingList[index].name = inputField.text;
+        inputField.text = "";
+
+        inputField.gameObject.SetActive(false);
+
         // 랭킹 저장
-        SaveRanking();
-    }
-
-    public void SaveRanking()
-    {
-        if(playerScores == null)
+        for (int i = 0; i < rankingList.Count; i++)
         {
-            playerScores = highScores;
+            PlayerPrefs.SetString("RankingName" + i, rankingList[i].name);
+            PlayerPrefs.SetFloat("RankingScore" + i, rankingList[i].score);
         }
-        // 랭킹 데이터를 JSON으로 변환
-        string json = JsonUtility.ToJson(highScores);
-        // JSON을 PlayerPrefs에 저장
-        PlayerPrefs.SetString("HighScores", json);
-        PlayerPrefs.Save();
+        isRank = 10;
+        rankingDisplay.nameChange = 2;
+        rankingDisplay.DisplayRanking();
     }
 
+    /// <summary>
+    /// PlayerPrefs에서 랭킹 불러오기
+    /// </summary>
     public void LoadRanking()
     {
-        // PlayerPrefs에서 랭킹 데이터 불러오기
-        json = PlayerPrefs.GetString("HighScores", "[]");
-        highScores = JsonUtility.FromJson<List<PlayerScore>>(json);
+        rankingList.Clear();
+        for (int i = 0; i < 5; i++)
+        {
+            if (PlayerPrefs.HasKey("RankingScore" + i))
+            {
+                RankingData loadedRankingData = new RankingData();
+                loadedRankingData.name = PlayerPrefs.GetString("RankingName" + i);
+                loadedRankingData.score = PlayerPrefs.GetFloat("RankingScore" + i);
+                rankingList.Add(loadedRankingData);
+            }
+        }
+        rankingDisplay.DisplayRanking();
+    }
+
+    void SceneLoadCheck()
+    {
+        rankingDisplay = null;
+        inputField = null;
+        rankingDisplay = FindObjectOfType<RankDisplay>();
+        inputField = FindObjectOfType<TMP_InputField>();
+        inputField.gameObject.SetActive(false);
     }
 }
