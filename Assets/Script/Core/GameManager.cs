@@ -51,6 +51,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Test_UI");
     }
 
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
     public void Restart()
     {
         rankManager = FindObjectOfType<RankingManager>();
