@@ -14,6 +14,7 @@ public class RankDisplay : MonoBehaviour
     RankingManager rankingManager; // 인스펙터에서 할당
     public TMP_InputField inputField;
     public int nameChange = 0;
+    Canvas canvas;
 
     private void Awake()
     {
@@ -32,7 +33,7 @@ public class RankDisplay : MonoBehaviour
 
     private void CanvasSet()
     {
-        Canvas canvas = FindObjectOfType<Canvas>();
+        canvas = FindObjectOfType<Canvas>();
         Transform transform = canvas.transform;
         Transform rank = transform.GetChild(1);
 
