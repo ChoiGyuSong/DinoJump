@@ -8,6 +8,8 @@ TagManager:
   - Ground
   - Score
   - Pause
+  - Sky
+  - Rank
   layers:
   - Default
   - TransparentFX

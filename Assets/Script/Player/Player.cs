@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class Player : MonoBehaviour
 {
@@ -16,42 +12,45 @@ public class Player : MonoBehaviour
     RankingManager rankManager;
     Timer timer;
     TextMeshProUGUI nowScore;
-    Canvas canvas;
-    Transform panel;
+    public GameObject rank;
+    float moveSpeed = 3.5f;
+    Vector2 inputMove;
+    GameManager gameManager;
 
     void Awake()
     {
         inputActions = new PlayerInput();
         rigid = GetComponent<Rigidbody2D>();
 
+        gameManager = FindObjectOfType<GameManager>();
         rankManager = FindObjectOfType<RankingManager>();
         timer = FindAnyObjectByType<Timer>();
 
         GameObject game = GameObject.FindWithTag("Score");
         nowScore = game.GetComponent<TextMeshProUGUI>();
 
-        canvas = FindObjectOfType<Canvas>();
-        panel = canvas.transform.GetChild(1);
-        panel.gameObject.SetActive(false);
+        rank = GameObject.FindWithTag("Rank");
     }
 
-    private void OnEnable()
+    private void FixedUpdate()
     {
-        inputActions.Player.Enable();
-        inputActions.Player.Move.performed += Move;
-        inputActions.Player.Jump.performed += Jump;
+        Move();
     }
 
-    private void OnDisable()
+    private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        inputActions.Player.Jump.performed -= Jump;
-        inputActions.Player.Move.performed += Move;
-        inputActions.Player.Disable();
+        inputMove = obj.ReadValue<Vector2>();
     }
 
-    private void Move(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void OnMoveCancel(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
+        inputMove = new Vector2(0,0);
+    }
 
+    private void Move()
+    {
+        Vector3 newPosition = transform.position + new Vector3(inputMove.x, 0, 0) * moveSpeed * Time.fixedDeltaTime;
+        transform.position = newPosition;
     }
 
     private void Jump(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -82,9 +81,26 @@ public class Player : MonoBehaviour
 
     void Die()
     {
-        panel.gameObject.SetActive(true);
+        gameManager.rankDis = true;
+        rank.gameObject.SetActive(true);
         nowScore.text = string.Format("{0:N2}", timer.time);
         rankManager.CheckRanking(timer.time);
         Time.timeScale = 0.0f;
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Player.Enable();
+        inputActions.Player.Move.performed += OnMove;
+        inputActions.Player.Move.canceled += OnMoveCancel;
+        inputActions.Player.Jump.performed += Jump;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Jump.performed -= Jump;
+        inputActions.Player.Move.performed -= OnMoveCancel;
+        inputActions.Player.Move.performed -= OnMove;
+        inputActions.Player.Disable();
     }
 }

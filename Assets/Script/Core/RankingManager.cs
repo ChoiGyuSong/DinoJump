@@ -16,7 +16,7 @@ public class RankingManager : MonoBehaviour
     GameObject rankingPanel;
     Text[] rankingTexts;
     public List<RankingData> rankingList = new List<RankingData>();
-    RankDisplay rankingDisplay;
+    public RankDisplay rankingDisplay;
     public int isRank;
     public int sceneLoad = 0;
 
@@ -24,18 +24,36 @@ public class RankingManager : MonoBehaviour
     {
         rankingDisplay = FindObjectOfType<RankDisplay>();
         inputField = FindObjectOfType<TMP_InputField>();
-        //inputField.gameObject.SetActive(false);
     }
 
     void Start()
     {
-        LoadRanking();
+        if (!PlayerPrefs.HasKey("RankingScore0"))
+        {
+            // PlayerPrefs에 랭킹 데이터가 없는 경우, 임의의 값으로 랭킹을 채움
+            for (int i = 0; i < 5; i++)
+            {
+                RankingData newRankingData = new RankingData();
+                newRankingData.name = "Test Player" + (i + 1); // 임의의 이름 설정
+                newRankingData.score = (i+1) * 0.01f; // 임의의 점수 설정
+                rankingList.Add(newRankingData);
+            }
+            // 랭킹을 PlayerPrefs에 저장
+            for (int i = 0; i < rankingList.Count; i++)
+            {
+                PlayerPrefs.SetString("RankingName" + i, rankingList[i].name);
+                PlayerPrefs.SetFloat("RankingScore" + i, rankingList[i].score);
+            }
+        }
+        else
+        {
+            // PlayerPrefs에 랭킹 데이터가 있는 경우
+            LoadRanking();
+        }
+        rankingDisplay = FindObjectOfType<RankDisplay>();
+        rankingDisplay.gameObject.SetActive(false);
     }
 
-    public void TextOn()
-    {
-        inputField.gameObject.SetActive(true);
-    }
     /// <summary>
     /// 랭킹에 들어가는지 확인
     /// </summary>
@@ -56,34 +74,20 @@ public class RankingManager : MonoBehaviour
                 break; // 더 이상 비교할 필요 없음
             }
         }
-        Debug.Log(isRank);
-        if (rankingList.Count == 0)
-        {
-            // 리스트가 비어있는 경우
-            RankingData newRankingData = new RankingData();
-            newRankingData.score = score;
-            rankingList.Add(newRankingData);
 
-            // 이름 입력
-            inputField.gameObject.SetActive(true);
-            inputField.onEndEdit.AddListener(delegate { EnterName(0); });
-        }
-        else
+        // 순위 확인
+        for (int i = 0; i < rankingList.Count; i++)
         {
-            // 리스트에 데이터가 있는 경우
-            for (int i = 0; i < rankingList.Count; i++)
+            if (score > rankingList[i].score)
             {
-                if (score > rankingList[i].score)
-                {
-                    RankingData newRankingData = new RankingData();
-                    newRankingData.score = score;
-                    rankingList.Insert(i, newRankingData);
+                RankingData newRankingData = new RankingData();
+                newRankingData.score = score;
+                rankingList.Insert(i, newRankingData);
 
-                    // 이름 입력
-                    inputField.gameObject.SetActive(true);
-                    inputField.onEndEdit.AddListener(delegate { EnterName(i); });
-                    break;
-                }
+                // 이름 입력
+                inputField.gameObject.SetActive(true);
+                inputField.onEndEdit.AddListener(delegate { EnterName(i); });
+                break;
             }
         }
 

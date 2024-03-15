@@ -16,9 +16,9 @@ public class CloudManager : MonoBehaviour
     }
     public void CreatCloud()
     {
-        randY = Random.Range(0.8f, 5.0f);
-        genPosition = new Vector3(background.rightPosX * 0.5f, randY, 0);
-        creatCloud = Random.value;
+        randY = Random.Range(0.8f, 5.0f);   // 구름 생성 위치 랜덤
+        genPosition = new Vector3(background.rightPosX * 0.5f, randY, 0);   // 구름 생성
+        creatCloud = Random.value;  // 구름 두종류중 랜덤으로 생성
         if (creatCloud < 0.25f)
         {
             Instantiate(cloudPref[0], genPosition, Quaternion.identity);

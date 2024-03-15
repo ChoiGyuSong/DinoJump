@@ -18,9 +18,9 @@ public class CactusManager : MonoBehaviour
     }
     public void CreatCactus()
     {
-        genX = background.rightPosX * 0.5f;
-        randCactus = Random.Range(1, 4);
-        randCactusGen = Random.Range(genX -2, genX +4);
+        genX = background.rightPosX * 0.5f; // 일정 범위내 랜덤으로 선인장 생성
+        randCactus = Random.Range(1, 4);    // 선인장 세개중 랜덤으로 생성
+        randCactusGen = Random.Range(genX -2, genX +4); // 선인장 생성
         genPosition = new Vector3(randCactusGen, -1.3f, 0);
         if (randCactus == 1)
         {

@@ -31,6 +31,9 @@ public class RankDisplay : MonoBehaviour
         CanvasSet();
     }
 
+    /// <summary>
+    /// UI에 필요한 오브젝트를 찾는 함수
+    /// </summary>
     private void CanvasSet()
     {
         canvas = FindObjectOfType<Canvas>();
@@ -49,11 +52,13 @@ public class RankDisplay : MonoBehaviour
         inputField = FindObjectOfType<TMP_InputField>();
     }
 
+    /// <summary>
+    /// 랭킹을 표시해주는 함수
+    /// </summary>
     public void DisplayRanking()
     {
         int rankCount = Mathf.Min(5, rankingManager.rankingList.Count);
 
-        Debug.Log(nameChange);
         // 랭킹을 최대 순위까지 표시합니다.
         for (int i = 0; i < rankCount; i++)
         {

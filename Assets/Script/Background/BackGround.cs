@@ -32,18 +32,23 @@ public class BackGround : MonoBehaviour
 
             if (grounds[i].position.x < leftPosX)
             {
+                // 배경 이동
                 Vector3 nextPos = grounds[i].position;
                 nextPos = new Vector3(nextPos.x + rightPosX, nextPos.y, nextPos.z);
                 grounds[i].position = nextPos;
-                if(speed == 0.5f)
+
+                if(this.gameObject.tag == "Sky")
                 {
+                    // 만약 이 스크립트가 들어있는 오브젝트가 하늘이라면
                     cloud.CreatCloud();
                 }
-                if(speed == 4)
+                if(this.gameObject.tag == "Ground")
                 {
+                    // 만약 이 스크립트가 들어있는 오브젝트가 땅이라면
                     groundCount++;
                     if(groundCount > 1)
                     {
+                        // 배경 두칸당 선인장 생성
                         creatCactus = Random.value;
                         if(creatCactus < 0.7f)
                         {

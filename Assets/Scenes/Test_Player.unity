@@ -1035,7 +1035,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 535775523}
-  - component: {fileID: 535775524}
   - component: {fileID: 535775526}
   - component: {fileID: 535775525}
   m_Layer: 0
@@ -1068,30 +1067,6 @@ Transform:
   - {fileID: 2114354635}
   m_Father: {fileID: 97888984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &535775524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 535775521}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d0f20f3bf90ac644b3e2c13eedee52b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 4
-  grounds:
-  - {fileID: 2075017294}
-  - {fileID: 605588573}
-  - {fileID: 26707809}
-  - {fileID: 319153921}
-  - {fileID: 1587558708}
-  - {fileID: 996395328}
-  - {fileID: 697787123}
-  - {fileID: 2114354635}
-  cloudPref: []
-  rightPosX: 0
 --- !u!50 &535775525
 Rigidbody2D:
   serializedVersion: 4
@@ -1650,7 +1625,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1194296801}
-  - component: {fileID: 1194296802}
   m_Layer: 0
   m_Name: SkyCollection
   m_TagString: Untagged
@@ -1681,32 +1655,6 @@ Transform:
   - {fileID: 2059314910}
   m_Father: {fileID: 97888984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1194296802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194296799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d0f20f3bf90ac644b3e2c13eedee52b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0.5
-  grounds:
-  - {fileID: 1887344153}
-  - {fileID: 33915296}
-  - {fileID: 408565760}
-  - {fileID: 658281934}
-  - {fileID: 674977370}
-  - {fileID: 318843036}
-  - {fileID: 438615995}
-  - {fileID: 2059314910}
-  cloudPref:
-  - {fileID: 7510651474252856692, guid: 7e553ec6d43bab24a82e31e933b145ca, type: 3}
-  - {fileID: 1961994367021463385, guid: f91e683d41279a04ca72a1cc084d529f, type: 3}
-  rightPosX: 0
 --- !u!1001 &1194365172
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2159,6 +2107,7 @@ MonoBehaviour:
   jumpPower: 7
   isJump: 0
   doubleJump: 0
+  rank: {fileID: 0}
 --- !u!1 &1887344152
 GameObject:
   m_ObjectHideFlags: 0
